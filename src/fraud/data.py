@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import Optional
-from datetime import datetime
+from datetime import datetime, UTC
 import numpy as np
 import pandas as pd
 import uuid
@@ -45,7 +45,8 @@ def _fraud_score_row(r):
     return score
 
 def synth_transactions(n=10000, with_labels=True, start_ts=None) -> pd.DataFrame:
-    now = datetime.utcnow().timestamp() if start_ts is None else start_ts
+    #now = datetime.utcnow().timestamp() if start_ts is None else start_ts
+    now = datetime.now(UTC).timestamp() if start_ts is None else start_ts
     df = pd.DataFrame({
         "transaction_id": [str(uuid.uuid4()) for _ in range(n)],
         "user_id": RNG.integers(1, 5000, size=n),
