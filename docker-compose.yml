@@ -1,0 +1,68 @@
+services:
+  redpanda:
+    image: redpandadata/redpanda:latest
+    command: >
+      redpanda start --overprovisioned --smp 1 --memory 512M
+      --reserve-memory 0M --node-id 0 --check=false --advertise-kafka-addr redpanda:9092
+    ports: ["9092:9092"]
+
+  mlflow:
+    image: python:3.11-slim
+    working_dir: /srv
+    volumes:
+      - ./mlruns:/mlruns
+      - ./mlflow:/srv
+    environment:
+      - PIP_DISABLE_PIP_VERSION_CHECK=1
+    command: bash -lc "pip install --no-cache-dir mlflow==2.14.1 && mlflow server --backend-store-uri sqlite:///mlflow.db --default-artifact-root /mlruns --host 0.0.0.0 --port 5000"
+    ports:
+      - "5000:5000"
+
+  trainer:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.train
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+      - MODEL_NAME=fraud_model
+      - TRAIN_N=25000
+    volumes:
+      - ./artifacts:/app/artifacts
+    depends_on:
+      - mlflow
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    environment:
+      - MODEL_LOCAL_PATH=/app/artifacts/model.joblib
+    volumes:
+      - ./artifacts:/app/artifacts:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - trainer
+
+  generator:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.generator
+    environment:
+      - KAFKA_BOOTSTRAP=redpanda:9092
+      - KAFKA_TOPIC_TX=transactions
+    depends_on:
+      - redpanda
+
+  stream:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.stream
+    environment:
+      - KAFKA_BOOTSTRAP=redpanda:9092
+      - KAFKA_TOPIC_TX=transactions
+      - KAFKA_TOPIC_SCORED=transactions_scored
+      - API_URL=http://api:8000/predict
+    depends_on:
+      - redpanda
+      - api

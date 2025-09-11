@@ -1,0 +1,8 @@
+FROM python:3.11-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY src ./src
+COPY scripts/consume_and_score.py ./scripts/consume_and_score.py
+ENV PYTHONPATH=/app/src
+CMD ["python", "scripts/consume_and_score.py"]
