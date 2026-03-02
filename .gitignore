@@ -1,9 +1,46 @@
+# Python
 __pycache__/
 *.pyc
-.mlflow/
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# MLflow
 mlruns/
+mlflow.db
+.mlflow/
+
+# Artifacts / models
 artifacts/
+*.pkl
+*.joblib
+
+# Environment variables
 .env
-dist/
+.env.*
+
+# Build / packaging
 build/
+dist/
+*.egg-info/
+
+# Jupyter
 .ipynb_checkpoints/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

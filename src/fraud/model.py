@@ -29,7 +29,6 @@ def train_and_log(train_df: pd.DataFrame, mlflow_tracking_uri: str, model_name: 
         mlflow.log_metric("avg_precision", ap)
         mlflow.sklearn.log_model(pipe, "model", registered_model_name=model_name)
 
-        # persist a local copy for the API
         joblib.dump(pipe, MODEL_LOCAL_PATH)
 
         info = {
