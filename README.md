@@ -48,27 +48,29 @@ flowchart LR
 
 The Docker Compose environment runs Redpanda, MLflow, the transaction generator, model trainer, FastAPI service, and streaming consumer. The logs show the API continuously processing `POST /predict` requests.
 
-<img src="docker-services-and-streaming.png" width="700"/>
+<img width="1396" height="807" alt="Screenshot 2025-09-10 231106" src="https://github.com/user-attachments/assets/ca9d70d2-edc8-418a-8194-ea10790076aa" />
+
 
 ### Interactive scoring API
 
 FastAPI generates interactive OpenAPI documentation for the `POST /predict` endpoint.
 
-<img src="fastapi-docs.png" width="700"/>
+<img width="1852" height="804" alt="Screenshot 2025-09-10 215041" src="https://github.com/user-attachments/assets/e42d94cd-c088-47ae-b3e2-b4cc59268bec" />
+
 
 ### Transaction request and prediction response
 
 The API validates transaction features and returns the transaction identifier, fraud probability, and binary fraud classification.
 
-<img src="prediction-request.png" width="700"/>
+<img width="1796" height="820" alt="Screenshot 2025-09-10 231809" src="https://github.com/user-attachments/assets/4890551e-21f0-4fb1-99f2-c016cb628940" />
 
-<img src="prediction-response.png" width="700"/>
 
 ### MLflow experiment tracking
 
 Training runs are tracked in MLflow, including evaluation metrics, artifacts, source information, and the registered `fraud_model` version.
 
-<img src="mlflow-experiment.png" width="700"/>
+<img width="1912" height="591" alt="Screenshot 2025-09-10 210418" src="https://github.com/user-attachments/assets/07806c9a-804d-421d-b4d5-7950d84c8a05" />
+
 
 ## Services
 
